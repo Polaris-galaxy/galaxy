@@ -11,7 +11,7 @@ class Math{
         char m_operator;
 
     public:
-        Math(double number_one, double number_two, char operator) : m_number_one(number_one), m_number_two(number_two), m_operator(operator) {};
+        Math(double number_one, double number_two, char operator_) : m_number_one(number_one), m_number_two(number_two), m_operator(operator_) {};
 
     
 };
