@@ -1,0 +1,5 @@
+首先git init 初始化仓库
+然后git add .选择全部
+（git commit -m "Initial commit"）
+git remote add origin https://github.com/你的用户名/仓库名.git https://github.com/Polaris-galaxy/galaxy.git
+清除remote git remote remove origin
