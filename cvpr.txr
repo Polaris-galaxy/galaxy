@@ -1,0 +1,138 @@
+一、基于Transformer的检测方法改进
+加速收敛的DETR变体
+
+创新点：通过引入查询去噪（如DN-DETR）、混合匹配策略（如Hybrid-DETR）或动态查询生成，缩短训练周期（从500 epochs降至50 epochs以内）。
+
+典型论文：
+
+"DiffusionDet: Diffusion Model for Object Detection"：将扩散模型与检测结合，通过逐步去噪生成检测框。
+
+"DAB-DETR: Dynamic Anchor Boxes for Better Convergence"：引入动态锚框提升训练稳定性。
+
+轻量化Transformer设计
+
+创新点：通过稀疏注意力机制或混合架构（CNN+Transformer）降低计算成本。
+
+典型论文：
+
+"Sparse DETR: Efficient End-to-End Detection with Learnable Sparsity"：动态剪枝冗余注意力计算。
+
+二、轻量级与实时检测
+动态网络架构
+
+创新点：基于输入复杂度动态调整网络结构（如跳过某些层）。
+
+典型论文：
+
+"Dynamic YOLO: Runtime Optimization for On-Device Detection"：根据图像复杂度调整模型深度。
+
+神经架构搜索（NAS）
+
+创新点：自动搜索高效检测头或骨干网络。
+
+典型论文：
+
+"AutoDet: NAS for Object Detection with Multi-Objective Constraints"：联合优化精度和延迟。
+
+三、自监督与弱监督学习
+自监督预训练改进
+
+创新点：通过对比学习或掩码图像建模提升检测器泛化能力。
+
+典型论文：
+
+"Masked Autoencoder for Object Detection (MAE-Det)"：扩展MAE至检测任务，提升小样本性能。
+
+弱监督与无标注数据利用
+
+创新点：仅用图像级标签或点标注训练检测器。
+
+典型论文：
+
+"Point-Supervised Detection via Dual-Cross Verification"：利用点标注和跨样本验证减少噪声。
+
+四、3D与多模态检测
+多模态融合
+
+创新点：结合LiDAR、RGB和文本信息提升鲁棒性。
+
+典型论文：
+
+*"CLIP-Det: Language-Guided 3D Object Detection"*：利用CLIP的语义先验优化3D检测。
+
+高效3D检测器
+
+创新点：通过体素稀疏化或2D-3D联合推理降低计算量。
+
+典型论文：
+
+*"VoxelNeXt: Fully Sparse VoxelNet for Real-Time 3D Detection"*：全稀疏体素网络加速推理。
+
+五、开放世界与长尾分布
+开放词汇检测
+
+创新点：结合视觉-语言模型（如CLIP）检测未知类别。
+
+典型论文：
+
+"OW-DETR: Open-World Detection Transformer"：通过文本查询扩展检测类别。
+
+长尾分布优化
+
+创新点：重加权损失函数或解耦特征学习与分类器。
+
+典型论文：
+
+"Decoupled Long-Tailed Detection via Memory-Augmented Contrastive Learning"：解耦特征与分类，缓解长尾偏差。
+
+六、鲁棒性与可解释性
+对抗鲁棒性
+
+创新点：防御对抗攻击的检测器设计。
+
+典型论文：
+
+"RobustDet: Adversarial Training with Feature Denoising"：通过特征去噪提升鲁棒性。
+
+可解释性分析
+
+创新点：可视化检测器决策依据或生成解释性热力图。
+
+典型论文：
+
+"X-Det: Explainable Object Detection via Concept Activation Vectors"：通过概念激活向量解释检测结果。
+
+七、数据高效与少样本学习
+少样本迁移学习
+
+创新点：利用元学习或原型匹配实现少量样本下的快速适配。
+
+典型论文：
+
+"Meta-Detection: Few-Shot Adaptation via Meta-Learning"：元学习优化模型初始化参数。
+
+合成数据增强
+
+创新点：通过GAN或扩散模型生成高质量训练数据。
+
+典型论文：
+
+"DiffusionAug: Diffusion-based Data Augmentation for Object Detection"：扩散模型生成多样化的训练样本。
+
+八、其他新兴方向
+视频目标检测
+
+创新点：利用时序一致性提升视频流中的检测稳定性。
+
+典型论文：
+
+"TubeFormer: Spatio-Temporal Query Aggregation for Video Detection"：通过时序查询聚合减少抖动。
+
+绿色AI与能效优化
+
+创新点：量化、蒸馏或硬件协同设计降低能耗。
+
+典型论文：
+
+"EcoDet: Energy-Aware Object Detection via Dynamic Resolution Scaling"：动态调整输入分辨率平衡精度与能耗。
+
