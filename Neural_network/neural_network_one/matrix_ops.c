@@ -1,6 +1,7 @@
 #include "matrix_ops.h"
 #include<stdio.h>
 #include<stdlib.h>
+#include<math.h>
 
 float** create_matrix(int rows, int cols){
     float** matrix = (float**)malloc(rows * sizeof(float*));
@@ -19,9 +20,10 @@ void freematrix(float** matrix, int rows){
 }
 
 void initmatrix_weight(float ** matrix, int rows, int cols){
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
-            matrix[i][j] = (float)rand() / RAND_MAX - 0.5f;
+    float stddev = sqrtf(2.0f / cols); // 输入维度倒数
+    for(int i=0; i<rows; i++){
+        for(int j=0; j<cols; j++){
+            matrix[i][j] = (float)rand()/RAND_MAX * stddev;
         }
     }
 }
