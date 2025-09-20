@@ -16,34 +16,14 @@
 
   - 解压后设置环境变量：
 
-    bash
-
-    
-
-    复制
-
-    
-
-    下载
-
     ```
-    export LIBTORCH_HOME=/path/to/libtorch
+export LIBTORCH_HOME=/path/to/libtorch
     export LD_LIBRARY_PATH=$LIBTORCH_HOME/lib:$LD_LIBRARY_PATH
-    ```
+```
 
 #### 1.2 转换YOLOv5模型为TorchScript
 
 YOLOv5的 `.pt` 模型需转换为TorchScript格式（`.torchscript.pt`）：
-
-bash
-
-
-
-复制
-
-
-
-下载
 
 ```
 git clone https://github.com/ultralytics/yolov5
@@ -60,16 +40,6 @@ python export.py --weights yolov5s.pt --include torchscript
 
 #### 2.1 创建ROS包
 
-bash
-
-
-
-复制
-
-
-
-下载
-
 ```
 catkin_create_pkg yolo_ros_cpp roscpp std_msgs sensor_msgs cv_bridge
 ```
@@ -77,16 +47,6 @@ catkin_create_pkg yolo_ros_cpp roscpp std_msgs sensor_msgs cv_bridge
 #### 2.2 定义自定义消息
 
 - 在 `msg/BoundingBox.msg` 中定义单条检测结果：
-
-  text
-
-  
-
-  复制
-
-  
-
-  下载
 
   ```
   string label
@@ -96,58 +56,24 @@ catkin_create_pkg yolo_ros_cpp roscpp std_msgs sensor_msgs cv_bridge
   int32 xmax
   int32 ymax
   ```
-
+  
 - 在 `msg/BoundingBoxes.msg` 中定义检测结果列表：
 
-  text
-
-  
-
-  复制
-
-  
-
-  下载
-
   ```
-  Header header
+Header header
   BoundingBox[] boxes
-  ```
+```
 
 #### 2.3 配置 `CMakeLists.txt` 和 `package.xml`
 
 - **package.xml**：添加消息生成依赖：
 
-  xml
-
-  
-
-  复制
-
-  
-
-  下载
-
-  
-
-  运行
-
   ```
   <build_depend>message_generation</build_depend>
   <exec_depend>message_runtime</exec_depend>
   ```
-
+  
 - **CMakeLists.txt**：启用消息生成和链接库：
-
-  cmake
-
-  
-
-  复制
-
-  
-
-  下载
 
   ```
   find_package(catkin REQUIRED COMPONENTS
@@ -166,16 +92,6 @@ catkin_create_pkg yolo_ros_cpp roscpp std_msgs sensor_msgs cv_bridge
 ### **3. C++节点实现**
 
 #### 3.1 代码结构 (`src/yolo_detector.cpp`)
-
-cpp
-
-
-
-复制
-
-
-
-下载
 
 ```
 #include <ros/ros.h>
@@ -339,16 +255,6 @@ int main(int argc, char** argv) {
 
 添加LibTorch和OpenCV依赖：
 
-cmake
-
-
-
-复制
-
-
-
-下载
-
 ```
 find_package(OpenCV REQUIRED)
 find_package(Torch REQUIRED)
@@ -363,16 +269,6 @@ target_link_libraries(yolo_detector
 
 #### 4.2 编译并运行
 
-bash
-
-
-
-复制
-
-
-
-下载
-
 ```
 catkin_make
 source devel/setup.bash
@@ -384,16 +280,6 @@ rosrun yolo_ros_cpp yolo_detector
 ### **5. 订阅检测结果**
 
 其他节点可订阅 `/yolo/bounding_boxes` 获取检测结果。示例订阅者：
-
-cpp
-
-
-
-复制
-
-
-
-下载
 
 ```
 #include <ros/ros.h>
@@ -433,16 +319,6 @@ YOLOv5的输出格式可能因版本不同而变化。需确保后处理逻辑�
 #### 6.3 非极大值抑制（NMS）
 
 若模型未内置NMS，需手动实现：
-
-cpp
-
-
-
-复制
-
-
-
-下载
 
 ```
 #include <torchvision/vision.h> // 需要安装torchvision C++库
