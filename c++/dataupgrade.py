@@ -162,18 +162,18 @@ def wool_specific_augmentation():
         A.ElasticTransform(alpha=1, sigma=50, alpha_affine=50, p=0.3),
         
         # 多种模糊效果
-        A.OneOf([
+        A.SomeOf([
             A.GaussianBlur(blur_limit=7, p=0.5),
             A.MotionBlur(blur_limit=5, p=0.3),
             A.MedianBlur(blur_limit=5, p=0.2),
-        ], p=0.4),
+        ], n = 2, p=0.4),
         
         # 噪声和压缩伪影
-        A.OneOf([
+        A.SomeOf([
             A.GaussNoise(var_limit=(10.0, 100.0), p=0.5),
             A.ISONoise(color_shift=(0.01, 0.05), intensity=(0.1, 0.5), p=0.3),
             A.ImageCompression(quality_lower=60, quality_upper=90, p=0.2),
-        ], p=0.3),
+        ],n = 2 ,p=0.3),
         
         # 模拟不同光照条件
         A.RandomGamma(gamma_limit=(80, 120), p=0.3),
@@ -254,6 +254,34 @@ def wool_fiber_aware_augmentation():
 #         A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.3, p=0.5),
 #         A.CLAHE(clip_limit=3.0, p=0.3),
 #     ])
+    
+    # return transform
+
+def wool_environment_augmentation():
+
+    """
+    针对羊毛图像在不同环境下的增强策略
+    模拟不同光照和天气条件
+    """
+    transform = A.Compose([
+        # 模拟不同光照条件
+        A.RandomGamma(gamma_limit=(80, 120), p=0.5),
+        A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.2, p=0.5),
+        
+        # 模拟雨天或雪天效果
+        A.RandomRain(p=0.3),
+        A.RandomSnow(p=0.3),
+        
+        # 颜色增强 - 保持羊毛颜色特性
+        A.HueSaturationValue(hue_shift_limit=10, sat_shift_limit=20, val_shift_limit=10, p=0.4),
+        
+        # 几何变换 - 保持羊毛结构
+        A.HorizontalFlip(p=0.5),
+        A.VerticalFlip(p=0.5),
+        
+        # 噪声增强 - 模拟不同拍摄条件
+        A.GaussNoise(var_limit=(10.0, 50.0), p=0.3),
+    ])
     
     return transform
 
@@ -343,6 +371,77 @@ def process_wool_images(input_folder, output_folder, augmentation_strength='mode
     print(f"原始图像数量: {len(image_files)}")
     print(f"平均每张原始图像生成: {total_generated/len(image_files):.1f} 张增强图像")
 
+def second_environment_process(input_folder, output_folder, target_multiplier=5):
+    """
+    第二次环境处理，进一步增强图像
+    参数:
+    - input_folder: 输入图像文件夹
+    - output_folder: 输出文件夹
+    - target_multiplier: 目标增强倍数
+    """
+    # 创建输出文件夹
+    os.makedirs(output_folder, exist_ok=True)
+
+    transform = wool_environment_augmentation()
+     # 获取所有图像文件
+    image_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.tiff']
+    image_files = [f for f in os.listdir(input_folder) 
+                  if Path(f).suffix.lower() in image_extensions]
+    
+    print(f"找到 {len(image_files)} 张羊毛图像")
+    print(f"增强强度: environment")
+    print(f"目标增强倍数: {target_multiplier}")
+
+     # 计算每张图像需要生成的增强版本数量
+    images_needed = target_multiplier
+    if len(image_files) > 0:
+        images_per_original = max(1, images_needed // len(image_files))
+    else:
+        print("未找到图像文件")
+        return
+    
+    # 处理每张图像
+    total_generated = 0
+    for img_file in image_files:
+        img_path = os.path.join(input_folder, img_file)
+        image = cv2.imread(img_path)
+        
+        if image is None:
+            print(f"无法读取图像: {img_file}")
+            continue
+            
+        # 转换为RGB
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        
+        base_name = Path(img_file).stem
+        
+        # 生成增强版本
+        for i in range(images_per_original):
+            try:
+                # 应用增强
+                augmented = transform(image=image_rgb)
+                augmented_image = augmented['image']
+                
+                # 保存增强后的图像
+                output_filename = f"{base_name}_wool_aug_{i+1}.jpg"
+                output_path = os.path.join(output_folder, output_filename)
+                
+                # 转换回BGR保存
+                save_image = cv2.cvtColor(augmented_image, cv2.COLOR_RGB2BGR)
+                cv2.imwrite(output_path, save_image, [cv2.IMWRITE_JPEG_QUALITY, 95])
+                
+                total_generated += 1
+                
+            except Exception as e:
+                print(f"增强 {img_file} 时出错: {str(e)}")
+                continue
+    
+    print(f"增强完成! 共生成 {total_generated} 张增强图像")
+    print(f"原始图像数量: {len(image_files)}")
+    print(f"平均每张原始图像生成: {total_generated/len(image_files):.1f} 张增强图像")
+
+    transform = wool_environment_augmentation()
+    return transform
 # 使用示例
 if __name__ == "__main__":
     process_wool_images(
@@ -350,5 +449,11 @@ if __name__ == "__main__":
         output_folder="D:/Galaxy/其他/桌面/数据输出（重度）",
         augmentation_strength='heavy',
         target_multiplier=10,
-        wool_type=''  # 细羊毛
+        wool_type=''  
     )
+
+    print("第一次增强完成，开始第二次环境增强...")
+    transform = second_environment_process(input_folder="D:/Galaxy/其他/桌面/数据输出（重度）",
+                                           output_folder="D:/Galaxy/其他/桌面/二次增强",
+                                            target_multiplier=100
+                                            )
