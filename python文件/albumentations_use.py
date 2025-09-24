@@ -308,11 +308,11 @@ def process_wool_images(input_folder, output_folder, augmentation_strength='mode
     elif wool_type == 'coarse':
         # 粗羊毛 - 可以接受更强的增强
         wool_transforms = wool_specific_augmentation()
-        transform = wool_transforms.get(augmentation_strength, wool_transforms['heavy'])
+        transform = wool_transforms.get(augmentation_strength, wool_transforms['moderate'])
     else:
         # 通用羊毛增强
         wool_transforms = wool_specific_augmentation()
-        transform = wool_transforms.get(augmentation_strength, wool_transforms['heavy'])
+        transform = wool_transforms.get(augmentation_strength, wool_transforms['moderate'])
     
     # 获取所有图像文件
     image_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.tiff']
@@ -446,14 +446,14 @@ def second_environment_process(input_folder, output_folder, target_multiplier=5)
 if __name__ == "__main__":
     process_wool_images(
         input_folder="D:/Galaxy/其他/桌面/数据增强",
-        output_folder="D:/Galaxy/其他/桌面/数据输出（轻度）",
-        augmentation_strength='light',
+        output_folder="D:/Galaxy/其他/桌面/数据输出（重度）",
+        augmentation_strength='heavy',
         target_multiplier=10,
         wool_type=''  
     )
 
     print("第一次增强完成，开始第二次环境增强...")
-    transform = second_environment_process(input_folder="D:/Galaxy/其他/桌面/数据输出（轻度）",
+    transform = second_environment_process(input_folder="D:/Galaxy/其他/桌面/数据输出（重度）",
                                            output_folder="D:/Galaxy/其他/桌面/二次增强",
-                                            target_multiplier=100
+                                            target_multiplier=50
                                             )
