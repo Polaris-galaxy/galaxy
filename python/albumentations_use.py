@@ -97,7 +97,7 @@
 # )
 import warnings
 warnings.filterwarnings("ignore", message="A new version of Albumentations is available")
-import albumentations as A
+import python.albumentations_use as A
 import os
 import cv2
 import numpy as np
@@ -217,45 +217,45 @@ def wool_fiber_aware_augmentation():
     
     return transform
 
-# def wool_quality_augmentation():
-#     """
-#     针对羊毛质量检测的增强策略
-#     重点增强与质量相关的特征
-#     """
-#     transform = A.Compose([
-#         # 增强纹理特征
-#         A.OneOf([
-#             A.Sharpen(alpha=(0.1, 0.3), lightness=(0.8, 1.2), p=0.4),
-#             A.Emboss(alpha=(0.1, 0.3), strength=(0.5, 1.0), p=0.3),
-#             A.RandomToneCurve(scale=0.1, p=0.3),
-#         ], p=0.5),
+def wool_quality_augmentation():
+    """
+    针对羊毛质量检测的增强策略
+    重点增强与质量相关的特征
+    """
+    transform = A.Compose([
+        # 增强纹理特征
+        A.OneOf([
+            A.Sharpen(alpha=(0.1, 0.3), lightness=(0.8, 1.2), p=0.4),
+            A.Emboss(alpha=(0.1, 0.3), strength=(0.5, 1.0), p=0.3),
+            A.RandomToneCurve(scale=0.1, p=0.3),
+        ], p=0.5),
         
-#         # 颜色增强 - 羊毛颜色是重要质量指标
-#         A.OneOf([
-#             A.HueSaturationValue(hue_shift_limit=10, sat_shift_limit=20, val_shift_limit=10, p=0.5),
-#             A.RGBShift(r_shift_limit=10, g_shift_limit=10, b_shift_limit=10, p=0.3),
-#             A.ChannelShuffle(p=0.2),
-#         ], p=0.6),
+        # 颜色增强 - 羊毛颜色是重要质量指标
+        A.OneOf([
+            A.HueSaturationValue(hue_shift_limit=10, sat_shift_limit=20, val_shift_limit=10, p=0.5),
+            A.RGBShift(r_shift_limit=10, g_shift_limit=10, b_shift_limit=10, p=0.3),
+            A.ChannelShuffle(p=0.2),
+        ], p=0.6),
         
-#         # 几何变换 - 不同角度观察羊毛
-#         A.ShiftScaleRotate(
-#             shift_limit=0.05, scale_limit=0.15, rotate_limit=45,
-#             border_mode=cv2.BORDER_REFLECT, p=0.5
-#         ),
+        # 几何变换 - 不同角度观察羊毛
+        A.ShiftScaleRotate(
+            shift_limit=0.05, scale_limit=0.15, rotate_limit=45,
+            border_mode=cv2.BORDER_REFLECT, p=0.5
+        ),
         
-#         # 模拟不同拍摄条件
-#         A.OneOf([
-#             A.GaussianBlur(blur_limit=3, p=0.4),
-#             A.MotionBlur(blur_limit=3, p=0.3),
-#             A.GaussNoise(var_limit=(10.0, 30.0), p=0.3),
-#         ], p=0.4),
+        # 模拟不同拍摄条件
+        A.OneOf([
+            A.GaussianBlur(blur_limit=3, p=0.4),
+            A.MotionBlur(blur_limit=3, p=0.3),
+            A.GaussNoise(var_limit=(10.0, 30.0), p=0.3),
+        ], p=0.4),
         
-#         # 增强对比度以突出纤维结构
-#         A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.3, p=0.5),
-#         A.CLAHE(clip_limit=3.0, p=0.3),
-#     ])
+        # 增强对比度以突出纤维结构
+        A.RandomBrightnessContrast(brightness_limit=0.2, contrast_limit=0.3, p=0.5),
+        A.CLAHE(clip_limit=3.0, p=0.3),
+    ])
     
-    # return transform
+    return transform
 
 def wool_environment_augmentation():
 
@@ -308,11 +308,11 @@ def process_wool_images(input_folder, output_folder, augmentation_strength='mode
     elif wool_type == 'coarse':
         # 粗羊毛 - 可以接受更强的增强
         wool_transforms = wool_specific_augmentation()
-        transform = wool_transforms.get(augmentation_strength, wool_transforms['moderate'])
+        transform = wool_transforms.get(augmentation_strength, wool_transforms['heavy'])
     else:
         # 通用羊毛增强
         wool_transforms = wool_specific_augmentation()
-        transform = wool_transforms.get(augmentation_strength, wool_transforms['moderate'])
+        transform = wool_transforms.get(augmentation_strength, wool_transforms['heavy'])
     
     # 获取所有图像文件
     image_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.tiff']
@@ -446,14 +446,14 @@ def second_environment_process(input_folder, output_folder, target_multiplier=5)
 if __name__ == "__main__":
     process_wool_images(
         input_folder="D:/Galaxy/其他/桌面/数据增强",
-        output_folder="D:/Galaxy/其他/桌面/数据输出（重度）",
-        augmentation_strength='heavy',
+        output_folder="D:/Galaxy/其他/桌面/数据输出（轻度）",
+        augmentation_strength='light',
         target_multiplier=10,
         wool_type=''  
     )
 
     print("第一次增强完成，开始第二次环境增强...")
-    transform = second_environment_process(input_folder="D:/Galaxy/其他/桌面/数据输出（重度）",
+    transform = second_environment_process(input_folder="D:/Galaxy/其他/桌面/数据输出（轻度）",
                                            output_folder="D:/Galaxy/其他/桌面/二次增强",
                                             target_multiplier=100
                                             )
